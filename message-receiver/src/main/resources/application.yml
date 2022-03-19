@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: message-receiver-service
+
+server:
+  port: 8088
