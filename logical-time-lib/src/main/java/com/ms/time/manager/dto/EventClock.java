@@ -4,10 +4,9 @@ public class EventClock {
     private EventClock() {}
 
     private long clock;
-    private static EventClock eventClock;
 
     public static EventClock getInstance() {
-        return eventClock != null ? eventClock : new EventClock();
+        return new EventClock();
     }
 
     public long getClock() {

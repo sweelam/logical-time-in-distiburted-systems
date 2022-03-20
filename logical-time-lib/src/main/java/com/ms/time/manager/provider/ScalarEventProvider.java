@@ -18,11 +18,11 @@ class ScalarEventProvider implements EventTimeManager {
 
     @Override
     public PublishedEvent buildEvent(String message, String serviceName) {
-        return new PublishedEvent(message, eventClockFactory.getEventClockInstance(serviceName));
+        return new PublishedEvent(message, eventClockFactory.generateClockInstance(serviceName));
     }
 
     @Override
     public PublishedEvent buildEvent(String message, String serviceName, String prevEventServiceName) {
-        return new PublishedEvent(message, eventClockFactory.getEventClockInstance(serviceName, prevEventServiceName));
+        return new PublishedEvent(message, eventClockFactory.generateClockInstance(serviceName, prevEventServiceName));
     }
 }
