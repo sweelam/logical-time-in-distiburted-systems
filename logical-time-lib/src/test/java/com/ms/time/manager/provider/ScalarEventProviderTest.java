@@ -1,6 +1,7 @@
 package com.ms.time.manager.provider;
 
-import com.ms.time.manager.domain.EventClockFactory;
+import com.ms.time.manager.EventTimeManager;
+import com.ms.time.manager.domain.ScalarEventClockFactory;
 import com.ms.time.manager.types.TimeType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,15 +10,15 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ScalarEventProviderTest {
-    private static EventClockFactory eventClockFactory;
-    private static ScalarEventProvider scalarEventProvider;
+    private static ScalarEventClockFactory eventClockFactory;
+    private static EventTimeManager scalarEventProvider;
     final static String SENDER = "message-sender-service";
     final static String RECEIVER = "message-sender-receiver";
 
     @BeforeAll
     public static void init() {
-        eventClockFactory = new EventClockFactory();
-        scalarEventProvider = new ScalarEventProvider(eventClockFactory);
+        eventClockFactory = new ScalarEventClockFactory();
+        scalarEventProvider = TimeProviderFactory.ofType(TimeType.SCALER_CLOCK);
     }
 
     @Test
@@ -25,11 +26,6 @@ class ScalarEventProviderTest {
         scalarEventProvider.registerService(SENDER);
         var result = eventClockFactory.getEventClockInstance(SENDER, "");
         Assertions.assertNotNull(result, "object is not created");
-    }
-
-    @Test
-    void ofType() {
-        assertTrue(scalarEventProvider.ofType(TimeType.SCALER_CLOCK) instanceof ScalarEventProvider);
     }
 
     @Test

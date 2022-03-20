@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class EventClockFactory {
+public class ScalarEventClockFactory {
     private static Map<String, EventClock> registeredServices = new HashMap<>();
 
     public EventClock getEventClockInstance(String serviceName) {

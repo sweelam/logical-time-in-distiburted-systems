@@ -1,13 +1,13 @@
 package com.ms.time.manager.provider;
 
 import com.ms.time.manager.EventTimeManager;
-import com.ms.time.manager.domain.EventClockFactory;
+import com.ms.time.manager.domain.VectorEventClockFactory;
 import com.ms.time.manager.dto.PublishedEvent;
 
-public class VectorClockEventProvider implements EventTimeManager {
-    private EventClockFactory eventClockFactory;
+class VectorClockEventProvider implements EventTimeManager {
+    private VectorEventClockFactory eventClockFactory;
 
-    public VectorClockEventProvider(EventClockFactory eventClockFactory) {
+    public VectorClockEventProvider(VectorEventClockFactory eventClockFactory) {
         this.eventClockFactory = eventClockFactory;
     }
 

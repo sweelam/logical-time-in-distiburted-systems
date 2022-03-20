@@ -1,7 +1,7 @@
 package com.ms;
 
-import com.ms.time.manager.domain.EventClockFactory;
-import com.ms.time.manager.provider.ScalarEventProvider;
+import com.ms.time.manager.provider.TimeProviderFactory;
+import com.ms.time.manager.types.TimeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -25,7 +25,7 @@ public class MessageSender implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        var provider = new ScalarEventProvider(new EventClockFactory());
+        var provider = TimeProviderFactory.ofType(TimeType.SCALER_CLOCK);
         provider.registerService(serviceName);
 
         restTemplate.postForObject(
