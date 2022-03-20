@@ -10,7 +10,7 @@ public class TimeProviderFactory {
     private static ScalarEventProvider scalarEventProvider;
     private static VectorClockEventProvider vectorClockEventProvider;
 
-    public synchronized static EventTimeManager ofType(TimeType timeType) {
+    public static synchronized EventTimeManager ofType(TimeType timeType) {
         if (scalarEventProvider == null) {
             scalarEventProvider = new ScalarEventProvider(new ScalarEventClockFactory());
         }

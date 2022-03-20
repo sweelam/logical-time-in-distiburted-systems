@@ -31,7 +31,7 @@ public class MessageReceiver {
 
         @PostMapping("/message")
         public String handleMessages(@RequestBody PublishedEvent event) {
-            logger.info("Received message " + event.message() + " with order " + event.eventClock().getClock());
+            logger.info("Received message {} with order {} ", event.message(), event.eventClock().getClock());
             return "Received message " + event.message();
         }
     }
