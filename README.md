@@ -7,9 +7,18 @@ This repo will maintain those algorithms in simple way to be a starter for anyon
 
 
 ###    Technology Stack 
-The following repo is built using Java 17 and delivered as self fat JAR, however to demostrate the usage with example there are also two simple service built using springboot 2.6
+The following repo is built using Java 17 and delivered as self fat JAR, however to demonstrate the usage with example there are also two simple service built using springboot 2.6
 
 
+###     Algorithms 
+#### 1. Scalar Time 
+The algorithm is maintaining the total order property, and data is stored within `EventClock` that contains the clock scalar value **long value**, the data stored in memory in HashMap, however you can save it in permanent datastore if required 
 
+The idea behind the algorithm is a follow
+````
+1. local_clock = max(local_clock, received_clock)
+2. local_clock = local_clock + 1
+3. message becomes available.
+````
 
 

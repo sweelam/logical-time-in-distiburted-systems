@@ -11,7 +11,7 @@ public class ScalarEventClockFactory {
     private static Map<String, EventClock> registeredServices = new HashMap<>();
 
     public void registerService(String serviceName) {
-        registeredServices.put(serviceName, EventClock.getInstance());
+        registeredServices.computeIfAbsent(serviceName, k -> EventClock.getInstance());
     }
 
     public void deRegisterService(String serviceName) {
