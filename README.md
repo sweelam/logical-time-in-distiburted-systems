@@ -1,9 +1,11 @@
 ## Logical Time in Distributed Systems
 
 ###    Overview
-It is known in distributed systems Message ordering is a challenge, and there are a couple of algorithms to avoid this problem like Scalar time and Vector clock
+It is known in distributed systems Message ordering is a challenge, and there are a couple of algorithms to avoid this problem like Scalar time and Vector clock.
 
-This repo will maintain those algorithms in simple way to be a starter for anyone who is interested in this topic
+for more information please refer to this pdf https://www.cs.uic.edu/~ajayk/Chapter3.pdf
+
+This repo will maintain those algorithms in simple way to be a starter for anyone who is interested in this topic.
 
 
 ###    Technology Stack 
