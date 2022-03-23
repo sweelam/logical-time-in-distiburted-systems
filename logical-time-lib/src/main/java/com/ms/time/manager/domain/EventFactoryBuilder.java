@@ -6,4 +6,8 @@ public interface EventFactoryBuilder {
     void deRegisterService(String serviceName);
 
     Object getCurrentClock(String serviceName);
+
+    Object generateClockInstance(String serviceName);
+
+    Object generateClockInstance(String serviceName, String prevEventServiceName);
 }
