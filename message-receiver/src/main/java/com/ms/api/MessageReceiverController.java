@@ -1,6 +1,6 @@
 package com.ms.api;
 
-import com.ms.time.manager.dto.PublishedEvent;
+import com.ms.time.manager.dto.ScalarPublishedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,7 @@ public class MessageReceiverController {
     Logger logger = LoggerFactory.getLogger(MessageReceiverController.class);
 
     @PostMapping("/message")
-    public String handleMessages(@RequestBody PublishedEvent event) {
+    public String handleMessages(@RequestBody ScalarPublishedEvent event) {
         logger.info("Received message {} with order {} ", event.message(), event.eventClock().getClock());
         return "Received message " + event.message();
     }

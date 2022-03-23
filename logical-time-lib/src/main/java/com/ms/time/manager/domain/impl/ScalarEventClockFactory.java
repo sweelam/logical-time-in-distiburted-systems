@@ -1,42 +1,43 @@
-package com.ms.time.manager.domain;
+package com.ms.time.manager.domain.impl;
 
-import com.ms.time.manager.dto.EventClock;
+import com.ms.time.manager.domain.EventFactoryBuilder;
+import com.ms.time.manager.dto.ScalarClock;
 import com.ms.time.manager.exception.LogicalTimeException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ScalarEventClockFactory {
-    private static Map<String, EventClock> registeredServices = new HashMap<>();
+public class ScalarEventClockFactory implements EventFactoryBuilder {
+    private static Map<String, ScalarClock> registeredServices = new HashMap<>();
 
     public void registerService(String serviceName) {
-        registeredServices.computeIfAbsent(serviceName, k -> EventClock.getInstance());
+        registeredServices.computeIfAbsent(serviceName, k -> ScalarClock.getInstance());
     }
 
     public void deRegisterService(String serviceName) {
         registeredServices.remove(serviceName);
     }
 
-    public EventClock generateClockInstance(String serviceName) {
+    public ScalarClock generateClockInstance(String serviceName) {
         if (!registeredServices.containsKey(serviceName)) {
             throw new LogicalTimeException("Service is not registered");
         }
 
-        EventClock result = registeredServices.get(serviceName);
+        ScalarClock result = registeredServices.get(serviceName);
         result.setClock(result.getClock() + 1);
         registeredServices.put(serviceName, result);
 
         return result;
     }
 
-    public EventClock generateClockInstance(String serviceName, String prevEventServiceName) {
+    public ScalarClock generateClockInstance(String serviceName, String prevEventServiceName) {
         if (!registeredServices.containsKey(serviceName)) {
             throw new LogicalTimeException("Service is not registered");
         }
 
-        EventClock result = registeredServices.get(serviceName);
-        long maxClock = result.getClock();
+        ScalarClock result = registeredServices.get(serviceName);
+        int maxClock = result.getClock();
 
         if (StringUtils.isNotEmpty(prevEventServiceName) && registeredServices.containsKey(prevEventServiceName)) {
             var senderClock = registeredServices.get(prevEventServiceName);
@@ -49,7 +50,7 @@ public class ScalarEventClockFactory {
         return result;
     }
 
-    public EventClock getCurrentClock(String serviceName) {
+    public ScalarClock getCurrentClock(String serviceName) {
         return registeredServices.get(serviceName);
     }
 }

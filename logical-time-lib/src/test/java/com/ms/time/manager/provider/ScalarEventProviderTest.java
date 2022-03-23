@@ -1,7 +1,7 @@
 package com.ms.time.manager.provider;
 
 import com.ms.time.manager.EventTimeManager;
-import com.ms.time.manager.domain.ScalarEventClockFactory;
+import com.ms.time.manager.domain.impl.ScalarEventClockFactory;
 import com.ms.time.manager.types.TimeType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -48,6 +48,7 @@ class ScalarEventProviderTest {
                 scalarEventProvider.buildEvent("Whatsapp message to abc", SERVICE_SENDER, PREV_EVENT);
 
         Assertions.assertNotNull(result, "object is not created");
-            assertTrue(eventClockFactory.getCurrentClock(PREV_EVENT).getClock() < eventClockFactory.getCurrentClock(SERVICE_SENDER).getClock());
+            assertTrue(eventClockFactory.getCurrentClock(PREV_EVENT).getClock() <
+                    eventClockFactory.getCurrentClock(SERVICE_SENDER).getClock());
     }
 }

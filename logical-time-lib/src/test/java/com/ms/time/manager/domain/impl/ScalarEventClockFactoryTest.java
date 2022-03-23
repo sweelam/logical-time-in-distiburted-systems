@@ -1,5 +1,6 @@
-package com.ms.time.manager.domain;
+package com.ms.time.manager.domain.impl;
 
+import com.ms.time.manager.domain.impl.ScalarEventClockFactory;
 import com.ms.time.manager.exception.LogicalTimeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

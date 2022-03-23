@@ -1,8 +1,8 @@
 package com.ms.time.manager.provider;
 
 import com.ms.time.manager.EventTimeManager;
-import com.ms.time.manager.domain.ScalarEventClockFactory;
-import com.ms.time.manager.dto.PublishedEvent;
+import com.ms.time.manager.domain.impl.ScalarEventClockFactory;
+import com.ms.time.manager.dto.ScalarPublishedEvent;
 
 class ScalarEventProvider implements EventTimeManager {
     private ScalarEventClockFactory eventClockFactory;
@@ -17,12 +17,12 @@ class ScalarEventProvider implements EventTimeManager {
     }
 
     @Override
-    public PublishedEvent buildEvent(String message, String serviceName) {
-        return new PublishedEvent(message, eventClockFactory.generateClockInstance(serviceName));
+    public ScalarPublishedEvent buildEvent(String message, String serviceName) {
+        return new ScalarPublishedEvent(message, eventClockFactory.generateClockInstance(serviceName));
     }
 
     @Override
-    public PublishedEvent buildEvent(String message, String serviceName, String prevEventServiceName) {
-        return new PublishedEvent(message, eventClockFactory.generateClockInstance(serviceName, prevEventServiceName));
+    public ScalarPublishedEvent buildEvent(String message, String serviceName, String prevEventServiceName) {
+        return new ScalarPublishedEvent(message, eventClockFactory.generateClockInstance(serviceName, prevEventServiceName));
     }
 }

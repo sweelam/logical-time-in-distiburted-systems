@@ -1,11 +1,11 @@
 package com.ms.time.manager;
 
-import com.ms.time.manager.dto.PublishedEvent;
+import com.ms.time.manager.dto.ScalarPublishedEvent;
 
 public interface EventTimeManager {
     void registerService(String serviceName);
 
-    PublishedEvent buildEvent(String message, String serviceName);
+    ScalarPublishedEvent buildEvent(String message, String serviceName);
 
-    PublishedEvent buildEvent(String message, String serviceName, String prevEventServiceName);
+    ScalarPublishedEvent buildEvent(String message, String serviceName, String prevEventServiceName);
 }
