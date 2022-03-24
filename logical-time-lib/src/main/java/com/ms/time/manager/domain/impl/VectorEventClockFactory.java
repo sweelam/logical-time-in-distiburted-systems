@@ -21,6 +21,9 @@ public class VectorEventClockFactory implements EventFactoryBuilder {
      * ]
      * */
     private static Map<String, Map<String, Object>> registeredServices = new HashMap<>();
+
+    private static final String PROCESS_NUMBER = "process-number";
+    private static final String CLOCK = "clock";
     private static int serviceCount = 0;
 
     @Override
@@ -35,12 +38,12 @@ public class VectorEventClockFactory implements EventFactoryBuilder {
         var vectorClock = VectorClock.getInstance();
         List<Integer> vector = new ArrayList<>(serviceCount);
         for (int i = 0; i < serviceCount; i++) {
-            vector.add(i);
+            vector.add(0);
         }
         vectorClock.setClock(vector);
 
-        processMap.put("process-number", serviceCount - 1);
-        processMap.put("clock", vectorClock);
+        processMap.put(PROCESS_NUMBER, serviceCount - 1);
+        processMap.put(CLOCK, vectorClock);
     }
 
     @Override
@@ -50,16 +53,21 @@ public class VectorEventClockFactory implements EventFactoryBuilder {
 
 
     @Override
-    public Object generateClockInstance(String serviceName) {
+    public VectorClock generateClockInstance(String serviceName) {
         if (!registeredServices.containsKey(serviceName)) {
             throw new LogicalTimeException("Service is not registered");
         }
 
-        return null;
+        var service = registeredServices.get(serviceName);
+        var processNumber = (Integer) service.get(PROCESS_NUMBER);
+        var vectorClock = (VectorClock) service.get(CLOCK);
+        vectorClock.getClock().set(processNumber, vectorClock.getClock().get(processNumber) + 1);
+
+        return vectorClock;
     }
 
     @Override
-    public Object generateClockInstance(String serviceName, String prevEventServiceName) {
+    public VectorClock generateClockInstance(String serviceName, String prevEventServiceName) {
         return null;
     }
 
