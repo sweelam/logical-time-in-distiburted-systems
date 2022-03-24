@@ -2,7 +2,7 @@ package com.ms.time.manager.provider;
 
 import com.ms.time.manager.EventTimeManager;
 import com.ms.time.manager.domain.impl.VectorEventClockFactory;
-import com.ms.time.manager.dto.ScalarPublishedEvent;
+import com.ms.time.manager.dto.VectorPublishedEvent;
 
 class VectorClockEventProvider implements EventTimeManager {
     private VectorEventClockFactory eventClockFactory;
@@ -13,16 +13,16 @@ class VectorClockEventProvider implements EventTimeManager {
 
     @Override
     public void registerService(String serviceName) {
-        return;
+        eventClockFactory.registerService(serviceName);
     }
 
     @Override
-    public ScalarPublishedEvent buildEvent(String message, String serviceName) {
-        return null;
+    public VectorPublishedEvent buildEvent(String message, String serviceName) {
+        return new VectorPublishedEvent(message, eventClockFactory.generateClockInstance(serviceName));
     }
 
     @Override
-    public ScalarPublishedEvent buildEvent(String message, String serviceName, String prevEventServiceName) {
+    public VectorPublishedEvent buildEvent(String message, String serviceName, String prevEventServiceName) {
         return null;
     }
 }
