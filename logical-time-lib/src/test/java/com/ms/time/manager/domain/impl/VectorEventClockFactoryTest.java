@@ -2,26 +2,33 @@ package com.ms.time.manager.domain.impl;
 
 import com.ms.time.manager.dto.VectorClock;
 import com.ms.time.manager.exception.LogicalTimeException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class VectorEventClockFactoryTest {
-    private static VectorEventClockFactory vectorEventClockFactory;
+    private static VectorClockFactory vectorClockFactory;
     private static final String SERVICE_NAME = "Service-A";
     private static final String SERVICE_NAME_B = "Service-B";
 
 
     @BeforeAll
     static void init() {
-        vectorEventClockFactory = new VectorEventClockFactory();
+        vectorClockFactory = new VectorClockFactory();
+    }
+
+    @AfterEach
+    void clean() {
+        vectorClockFactory.deRegisterService(SERVICE_NAME);
+        vectorClockFactory.deRegisterService(SERVICE_NAME_B);
     }
 
     @Test
     void registerService() {
-        vectorEventClockFactory.registerService(SERVICE_NAME);
-        var registeredServices = vectorEventClockFactory.getRegisteredService();
+        vectorClockFactory.registerService(SERVICE_NAME);
+        var registeredServices = vectorClockFactory.getRegisteredService();
 
         assertNotNull(registeredServices);
         assertTrue(registeredServices.size() > 0);
@@ -30,8 +37,8 @@ class VectorEventClockFactoryTest {
         assertEquals(0, (Integer) registeredServices.get(SERVICE_NAME).get("process-number"));
         assertEquals(1, ((VectorClock) registeredServices.get(SERVICE_NAME).get("clock")).getClock().size());
 
-        vectorEventClockFactory.registerService(SERVICE_NAME_B);
-        registeredServices = vectorEventClockFactory.getRegisteredService();
+        vectorClockFactory.registerService(SERVICE_NAME_B);
+        registeredServices = vectorClockFactory.getRegisteredService();
         assertEquals(1, (Integer) registeredServices.get(SERVICE_NAME_B).get("process-number"));
         assertEquals(2, ((VectorClock) registeredServices.get(SERVICE_NAME_B).get("clock")).getClock().size());
     }
@@ -40,27 +47,48 @@ class VectorEventClockFactoryTest {
     @Test
     void generateClockInstanceShouldThrowExceptionIfNotRehistered() throws LogicalTimeException {
         assertThrows(LogicalTimeException.class,
-                () -> vectorEventClockFactory.generateClockInstance(SERVICE_NAME));
+                () -> vectorClockFactory.generateClockInstance(SERVICE_NAME));
     }
 
 
     @Test
     void generateClockInstanceShouldIncreaseVectorProcess() {
-        vectorEventClockFactory.registerService(SERVICE_NAME);
-        var vectorClock = vectorEventClockFactory.generateClockInstance(SERVICE_NAME);
+        vectorClockFactory.registerService(SERVICE_NAME);
+        var vectorClock = vectorClockFactory.generateClockInstance(SERVICE_NAME);
 
         assertNotNull(vectorClock);
         assertEquals(1, vectorClock.getClock().get(0));
 
 
-        vectorClock = vectorEventClockFactory.generateClockInstance(SERVICE_NAME);
+        vectorClock = vectorClockFactory.generateClockInstance(SERVICE_NAME);
         assertNotNull(vectorClock);
         assertEquals(2, vectorClock.getClock().get(0));
 
-        vectorEventClockFactory.registerService(SERVICE_NAME_B);
-        vectorClock = vectorEventClockFactory.generateClockInstance(SERVICE_NAME_B);
+        vectorClockFactory.registerService(SERVICE_NAME_B);
+        vectorClock = vectorClockFactory.generateClockInstance(SERVICE_NAME_B);
 
         assertNotNull(vectorClock);
         assertEquals(1, vectorClock.getClock().get(1));
+    }
+
+
+
+    @Test
+    void generateClockInstanceShouldUpdateAfterMaximizing() {
+        vectorClockFactory.registerService(SERVICE_NAME);
+        vectorClockFactory.registerService(SERVICE_NAME_B);
+
+        var bVectorClock = vectorClockFactory.getCurrentClock(SERVICE_NAME_B);
+        var sourceVectorClock = vectorClockFactory.getCurrentClock(SERVICE_NAME);
+
+        vectorClockFactory.generateClockInstance(SERVICE_NAME_B);
+        vectorClockFactory.generateClockInstance(SERVICE_NAME_B);
+        vectorClockFactory.generateClockInstance(SERVICE_NAME_B);
+
+        assertEquals(2, bVectorClock.getClock().size());
+        assertEquals(3, bVectorClock.getClock().get(1));
+
+        vectorClockFactory.generateClockInstance(SERVICE_NAME, SERVICE_NAME_B);
+        assertEquals(1, sourceVectorClock.getClock().get(0));
     }
 }

@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ScalarEventClockFactory implements EventFactoryBuilder {
+public class ScalarClockFactory implements EventFactoryBuilder {
     private static Map<String, ScalarClock> registeredServices = new HashMap<>();
 
     @Override

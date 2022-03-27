@@ -1,7 +1,7 @@
 package com.ms.time.manager.provider;
 
 import com.ms.time.manager.EventTimeManager;
-import com.ms.time.manager.domain.impl.ScalarEventClockFactory;
+import com.ms.time.manager.domain.impl.ScalarClockFactory;
 import com.ms.time.manager.types.TimeType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,14 +10,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ScalarEventProviderTest {
-    private static ScalarEventClockFactory eventClockFactory;
+    private static ScalarClockFactory eventClockFactory;
     private static EventTimeManager scalarEventProvider;
     final static String PREV_EVENT = "message-sender-service";
     final static String SERVICE_SENDER = "message-sender-receiver";
 
     @BeforeAll
     public static void init() {
-        eventClockFactory = new ScalarEventClockFactory();
+        eventClockFactory = new ScalarClockFactory();
         scalarEventProvider = TimeProviderFactory.ofType(TimeType.SCALER_CLOCK);
     }
 

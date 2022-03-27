@@ -1,13 +1,13 @@
 package com.ms.time.manager.provider;
 
 import com.ms.time.manager.EventTimeManager;
-import com.ms.time.manager.domain.impl.ScalarEventClockFactory;
+import com.ms.time.manager.domain.impl.ScalarClockFactory;
 import com.ms.time.manager.dto.ScalarPublishedEvent;
 
 class ScalarEventProvider implements EventTimeManager {
-    private ScalarEventClockFactory eventClockFactory;
+    private ScalarClockFactory eventClockFactory;
 
-    public ScalarEventProvider(ScalarEventClockFactory eventClockFactory) {
+    public ScalarEventProvider(ScalarClockFactory eventClockFactory) {
         this.eventClockFactory = eventClockFactory;
     }
 
