@@ -23,7 +23,6 @@ public class VectorClockFactory implements EventFactoryBuilder {
      * ]
      */
     private static Map<String, Map<String, Object>> registeredServices = new HashMap<>();
-
     private static final String PROCESS_NUMBER = "process-number";
     private static final String CLOCK = "clock";
     private static int serviceCount = 0;
@@ -43,7 +42,7 @@ public class VectorClockFactory implements EventFactoryBuilder {
         vectorClock.setClock(initialVector);
 
         resizeOtherServices(registeredServices, serviceName,
-                (key) -> {
+                key -> {
                     var clockVector = (VectorClock) registeredServices.get(key).get(CLOCK);
                     clockVector.getClock().add(0);
                 });
@@ -66,7 +65,7 @@ public class VectorClockFactory implements EventFactoryBuilder {
         }
 
         resizeOtherServices(registeredServices, serviceName,
-                (key) -> {
+                key -> {
                     var processMap = registeredServices.get(key);
                     var clockVector = ((VectorClock) processMap.get(CLOCK)).getClock();
 
@@ -144,10 +143,10 @@ public class VectorClockFactory implements EventFactoryBuilder {
     }
 
     private void resizeOtherServices(Map<String, Map<String, Object>> registeredServices,
-                                     String serviceName, Consumer consumer) {
+                                     String serviceName, Consumer<String> consumer) {
         registeredServices.keySet()
                 .stream()
                 .filter(k -> !serviceName.equalsIgnoreCase(k))
-                .forEach(key -> consumer.accept(key));
+                .forEach(consumer::accept);
     }
 }
