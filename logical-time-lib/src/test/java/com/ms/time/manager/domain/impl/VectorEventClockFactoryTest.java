@@ -12,6 +12,7 @@ class VectorEventClockFactoryTest {
     private static VectorClockFactory vectorClockFactory;
     private static final String SERVICE_NAME = "Service-A";
     private static final String SERVICE_NAME_B = "Service-B";
+    private static final String SERVICE_NAME_C = "Service-C";
 
 
     @BeforeAll
@@ -23,6 +24,7 @@ class VectorEventClockFactoryTest {
     void clean() {
         vectorClockFactory.deRegisterService(SERVICE_NAME);
         vectorClockFactory.deRegisterService(SERVICE_NAME_B);
+        vectorClockFactory.deRegisterService(SERVICE_NAME_C);
     }
 
     @Test
@@ -90,5 +92,27 @@ class VectorEventClockFactoryTest {
 
         vectorClockFactory.generateClockInstance(SERVICE_NAME, SERVICE_NAME_B);
         assertEquals(1, sourceVectorClock.getClock().get(0));
+    }
+
+
+    @Test
+    void deRegisterShouldShrinkVectorSize() {
+        vectorClockFactory.registerService(SERVICE_NAME);
+        vectorClockFactory.registerService(SERVICE_NAME_B);
+        vectorClockFactory.registerService(SERVICE_NAME_C);
+
+        var registeredService = vectorClockFactory.getRegisteredService();
+
+        var aVectorClock = vectorClockFactory.getCurrentClock(SERVICE_NAME);
+        var bVectorClock = vectorClockFactory.getCurrentClock(SERVICE_NAME_B);
+        var cVectorClock = vectorClockFactory.getCurrentClock(SERVICE_NAME_C);
+
+        assertEquals(3, aVectorClock.getClock().size());
+        assertEquals(3, bVectorClock.getClock().size());
+
+        vectorClockFactory.deRegisterService(SERVICE_NAME_B);
+        assertEquals(2, aVectorClock.getClock().size());
+
+        assertEquals(2, cVectorClock.getClock().size());
     }
 }

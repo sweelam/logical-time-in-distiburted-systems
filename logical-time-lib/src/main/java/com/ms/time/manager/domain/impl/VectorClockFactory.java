@@ -9,18 +9,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class VectorClockFactory implements EventFactoryBuilder {
     /**
      * Structure of registered services : [process-name, [process-number, clock]]
      * Example:
      * ["service-A", [0, [0]]
-     *
+     * <p>
      * [
-     *      "service-A", [0, [0,0] ,
-     *      "service-B", [1, [0,0]
+     * "service-A", [0, [0,0] ,
+     * "service-B", [1, [0,0]
      * ]
-     * */
+     */
     private static Map<String, Map<String, Object>> registeredServices = new HashMap<>();
 
     private static final String PROCESS_NUMBER = "process-number";
@@ -29,8 +30,9 @@ public class VectorClockFactory implements EventFactoryBuilder {
 
     @Override
     public synchronized void registerService(String serviceName) {
-        if (registeredServices.containsKey(serviceName))
+        if (registeredServices.containsKey(serviceName)) {
             return;
+        }
 
         Map<String, Object> processMap = new HashMap<>();
         registeredServices.put(serviceName, processMap);
@@ -40,7 +42,11 @@ public class VectorClockFactory implements EventFactoryBuilder {
         List<Integer> initialVector = initializeNewServiceVector();
         vectorClock.setClock(initialVector);
 
-        growthOldServicesVector(registeredServices, serviceName);
+        resizeOtherServices(registeredServices, serviceName,
+                (key) -> {
+                    var clockVector = (VectorClock) registeredServices.get(key).get(CLOCK);
+                    clockVector.getClock().add(0);
+                });
 
         processMap.put(PROCESS_NUMBER, serviceCount - 1);
         processMap.put(CLOCK, vectorClock);
@@ -48,10 +54,34 @@ public class VectorClockFactory implements EventFactoryBuilder {
 
     @Override
     public void deRegisterService(String serviceName) {
-        // TODO size decrease for old services as well
+        if(!registeredServices.containsKey(serviceName)) {
+            return;
+        }
+
+        var processNumber = (Integer) registeredServices.get(serviceName).get(PROCESS_NUMBER);
+
         registeredServices.remove(serviceName);
-        if (serviceCount > 0)
+        if (serviceCount > 0) {
             serviceCount--;
+        }
+
+        resizeOtherServices(registeredServices, serviceName,
+                (key) -> {
+                    var processMap = registeredServices.get(key);
+                    var clockVector = ((VectorClock) processMap.get(CLOCK)).getClock();
+
+                    List<Integer> newClock = new ArrayList<>(serviceCount);
+                    for (int i = 0; i < clockVector.size(); i++) {
+                        if (i != processNumber) newClock.add(clockVector.get(i));
+                    }
+
+                    ((VectorClock) processMap.get(CLOCK)).setClock(newClock);
+
+                    // Decrease process-number after removal
+                    if ((int) processMap.get(PROCESS_NUMBER) > processNumber) {
+                        processMap.put(PROCESS_NUMBER, (int) processMap.get(PROCESS_NUMBER) - 1);
+                    }
+                });
     }
 
 
@@ -113,13 +143,11 @@ public class VectorClockFactory implements EventFactoryBuilder {
         return vector;
     }
 
-    private void growthOldServicesVector(Map<String, Map<String, Object>> registeredServices, String serviceName) {
+    private void resizeOtherServices(Map<String, Map<String, Object>> registeredServices,
+                                     String serviceName, Consumer consumer) {
         registeredServices.keySet()
                 .stream()
                 .filter(k -> !serviceName.equalsIgnoreCase(k))
-                .forEach(key -> {
-                    var clockVector = (VectorClock) registeredServices.get(key).get(CLOCK);
-                    clockVector.getClock().add(0);
-                });
+                .forEach(key -> consumer.accept(key));
     }
 }
