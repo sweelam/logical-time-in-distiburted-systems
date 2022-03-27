@@ -23,6 +23,6 @@ class VectorClockEventProvider implements EventTimeManager {
 
     @Override
     public VectorPublishedEvent buildEvent(String message, String serviceName, String prevEventServiceName) {
-        return null;
+        return new VectorPublishedEvent(message, eventClockFactory.generateClockInstance(serviceName, prevEventServiceName));
     }
 }
