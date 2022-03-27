@@ -1,8 +1,8 @@
 package com.ms.time.manager.provider;
 
 import com.ms.time.manager.EventTimeManager;
-import com.ms.time.manager.domain.ScalarEventClockFactory;
-import com.ms.time.manager.domain.VectorEventClockFactory;
+import com.ms.time.manager.domain.impl.ScalarClockFactory;
+import com.ms.time.manager.domain.impl.VectorClockFactory;
 import com.ms.time.manager.types.TimeType;
 
 public class TimeProviderFactory {
@@ -12,11 +12,11 @@ public class TimeProviderFactory {
 
     public static synchronized EventTimeManager ofType(TimeType timeType) {
         if (scalarEventProvider == null) {
-            scalarEventProvider = new ScalarEventProvider(new ScalarEventClockFactory());
+            scalarEventProvider = new ScalarEventProvider(new ScalarClockFactory());
         }
 
         if (vectorClockEventProvider == null) {
-            vectorClockEventProvider = new VectorClockEventProvider(new VectorEventClockFactory());
+            vectorClockEventProvider = new VectorClockEventProvider(new VectorClockFactory());
         }
 
         return switch (timeType) {

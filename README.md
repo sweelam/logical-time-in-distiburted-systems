@@ -14,7 +14,8 @@ The following repo is built using Java 17 and delivered as self fat JAR, however
 
 ###     Algorithms 
 #### 1. Scalar Time 
-The algorithm is maintaining the total order property, and data is stored within `EventClock` that contains the clock scalar value **long value**, the data stored in memory in HashMap, however you can save it in permanent datastore if required 
+The algorithm is maintaining the total order property, and data is stored within `EventClock` that contains the clock scalar value **long value**, 
+the processes' data are stored in memory in HashMap, however you can save it in permanent datastore if required 
 
 The idea behind the algorithm is a follow
 ````
@@ -23,4 +24,16 @@ The idea behind the algorithm is a follow
 3. message becomes available.
 ````
 
+#### How to use it?
+You need to start by register the process name (application name "Unique") , once process is registered you can use buildEvent to get EventClock. 
+````
+var provider = TimeProviderFactory.ofType(TimeType.SCALER_CLOCK);
+provider.registerService(serviceName);
+
+restTemplate.postForObject(
+        "http://localhost:8088/api/message",
+        provider.buildEvent("test message from sender", serviceName),
+        String.class
+);
+````
 
