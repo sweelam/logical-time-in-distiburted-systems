@@ -3,9 +3,7 @@ package com.ms.api;
 import com.ms.time.manager.provider.TimeProviderFactory;
 import com.ms.time.manager.types.TimeType;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
@@ -19,14 +17,18 @@ public class SenderController {
         this.restTemplate = restTemplate;
     }
 
-    @PostMapping("/message")
-    public void sendMessage() {
-        var provider = TimeProviderFactory.ofType(TimeType.SCALER_CLOCK);
-        provider.registerService(serviceName);
+    @PostMapping("/message/{appName}")
+    public void sendMessage(@RequestParam Integer type, @PathVariable String appName) {
+        var provider =
+                TimeProviderFactory.ofType(type == 1 ? TimeType.SCALER_CLOCK : TimeType.VECTOR_CLOCK);
+        provider.registerService(appName);
+
+        final String URL = type == 1 ?
+                "http://localhost:8088/api/scalar-message" : "http://localhost:8088/api/vector-message";
 
         restTemplate.postForObject(
-                "http://localhost:8088/api/message",
-                provider.buildEvent("test message from sender", serviceName),
+                URL,
+                provider.buildEvent("test message from sender", appName),
                 String.class
         );
     }

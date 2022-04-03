@@ -37,3 +37,49 @@ restTemplate.postForObject(
 );
 ````
 
+#### 2. Vector Clock Time 
+Scalar time suffers from concurrent messages, and can't advise the order in such case, 
+that's why Vector clock come into the play, the algorithm depends on Vector data structure to track the order for each service within order defined per vector.
+
+Basically, each process (service) will have same vector size, and each element in that vector will identify the order of message for that process.
+for more details please refer to the pdf mentioned above.
+
+#### How to use it?
+````
+var provider = TimeProviderFactory.ofType(TimeType.VECTOR_CLOCK);
+provider.registerService(serviceName);
+
+restTemplate.postForObject(
+        "http://localhost:8088/api/message",
+        provider.buildEvent("test message from sender", serviceName),
+        String.class
+);
+````
+
+
+#### General Usage 
+This repo includes two simple spring boot services with generic code like the following to test 
+you can use this CURL to test it , type 1 for scalar & otherwise for Vector
+````
+curl -X POST http://localhost:8089/api/message/sender1?type=1
+curl -X POST http://localhost:8089/api/message/sender1?type=1
+````
+
+````
+@PostMapping("/message/{appName}")
+public void sendMessage(@RequestParam Integer type, @PathVariable String appName) {
+    var provider = TimeProviderFactory.ofType(type == 1 ? 
+                         TimeType.SCALER_CLOCK : TimeType.VECTOR_CLOCK);
+    
+    provider.registerService(appName);
+
+    final String URL = type == 1 ?
+            "http://localhost:8088/api/scalar-message" : "http://localhost:8088/api/vector-message";
+
+    restTemplate.postForObject(
+            URL,
+            provider.buildEvent("test message from sender", appName),
+            String.class
+    );
+}
+````
