@@ -5,7 +5,7 @@ import com.ms.time.manager.domain.impl.ScalarClockFactory;
 import com.ms.time.manager.dto.ScalarPublishedEvent;
 
 class ScalarEventProvider implements EventTimeManager {
-    private ScalarClockFactory eventClockFactory;
+    private final ScalarClockFactory eventClockFactory;
 
     public ScalarEventProvider(ScalarClockFactory eventClockFactory) {
         this.eventClockFactory = eventClockFactory;

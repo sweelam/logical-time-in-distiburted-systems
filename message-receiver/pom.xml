@@ -35,9 +35,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.distributed.sytems</groupId>
+            <groupId>com.ms.time.manager</groupId>
             <artifactId>logical-time-lib</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
