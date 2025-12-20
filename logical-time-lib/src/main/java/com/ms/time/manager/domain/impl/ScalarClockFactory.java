@@ -12,17 +12,17 @@ public class ScalarClockFactory implements EventFactoryBuilder {
     private static Map<String, ScalarClock> registeredServices = new HashMap<>();
 
     @Override
-    public void registerService(String serviceName) {
+    public synchronized void registerService(String serviceName) {
         registeredServices.computeIfAbsent(serviceName, k -> ScalarClock.getInstance());
     }
 
     @Override
-    public void deRegisterService(String serviceName) {
+    public synchronized void deRegisterService(String serviceName) {
         registeredServices.remove(serviceName);
     }
 
     @Override
-    public ScalarClock generateClockInstance(String serviceName) {
+    public synchronized ScalarClock generateClockInstance(String serviceName) {
         if (!registeredServices.containsKey(serviceName)) {
             throw new LogicalTimeException("Service is not registered");
         }
@@ -35,7 +35,7 @@ public class ScalarClockFactory implements EventFactoryBuilder {
     }
 
     @Override
-    public ScalarClock generateClockInstance(String serviceName, String prevEventServiceName) {
+    public synchronized ScalarClock generateClockInstance(String serviceName, String prevEventServiceName) {
         if (!registeredServices.containsKey(serviceName)) {
             throw new LogicalTimeException("Service is not registered");
         }

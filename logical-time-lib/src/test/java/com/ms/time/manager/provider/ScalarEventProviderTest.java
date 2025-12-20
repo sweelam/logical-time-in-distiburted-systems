@@ -18,7 +18,7 @@ class ScalarEventProviderTest {
     @BeforeAll
     public static void init() {
         eventClockFactory = new ScalarClockFactory();
-        scalarEventProvider = TimeProviderFactory.ofType(TimeType.SCALER_CLOCK);
+        scalarEventProvider = TimeProviderFactory.ofType(TimeType.SCALAR_CLOCK);
     }
 
     @Test

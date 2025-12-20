@@ -22,7 +22,7 @@ public class SenderController {
     @PostMapping("/message/{appName}")
     public void sendMessage(@RequestParam Integer type, @PathVariable String appName) {
         var provider =
-                TimeProviderFactory.ofType(type == 1 ? TimeType.SCALER_CLOCK : TimeType.VECTOR_CLOCK);
+                TimeProviderFactory.ofType(type == 1 ? TimeType.SCALAR_CLOCK : TimeType.VECTOR_CLOCK);
         provider.registerService(appName);
 
         final String URL = type == 1 ? SCALAR_MESSAGE_URL : VECTOR_MESSAGE_API_URL;

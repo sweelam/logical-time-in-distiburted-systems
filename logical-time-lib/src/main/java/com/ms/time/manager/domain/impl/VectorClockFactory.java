@@ -52,7 +52,7 @@ public class VectorClockFactory implements EventFactoryBuilder {
     }
 
     @Override
-    public void deRegisterService(String serviceName) {
+    public synchronized void deRegisterService(String serviceName) {
         if(!registeredServices.containsKey(serviceName)) {
             return;
         }

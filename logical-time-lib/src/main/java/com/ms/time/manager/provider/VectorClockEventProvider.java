@@ -5,7 +5,7 @@ import com.ms.time.manager.domain.impl.VectorClockFactory;
 import com.ms.time.manager.dto.VectorPublishedEvent;
 
 class VectorClockEventProvider implements EventTimeManager {
-    private VectorClockFactory eventClockFactory;
+    private final VectorClockFactory eventClockFactory;
 
     public VectorClockEventProvider(VectorClockFactory eventClockFactory) {
         this.eventClockFactory = eventClockFactory;
@@ -23,6 +23,7 @@ class VectorClockEventProvider implements EventTimeManager {
 
     @Override
     public VectorPublishedEvent buildEvent(String message, String serviceName, String prevEventServiceName) {
-        return new VectorPublishedEvent(message, eventClockFactory.generateClockInstance(serviceName, prevEventServiceName));
+        return new VectorPublishedEvent(message,
+                eventClockFactory.generateClockInstance(serviceName, prevEventServiceName));
     }
 }
